@@ -27,7 +27,6 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
       price: data.price,
       discount: data.discount || 0,
       tax: data.tax || 0,
-      total: data.price - (data.discount || 0) + (data.tax || 0),
       description: data.description || '',
       category: data.category || '',
       paymentMethod: data.paymentMethod || '',

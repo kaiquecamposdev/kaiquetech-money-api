@@ -18,10 +18,26 @@ interface CreateTransactionUseCaseResponse {
 export class CreateTransactionUseCase {
   constructor(private transactionsRepository: TransactionsRepository) {}
 
-  async execute(data: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
-    const transaction = await this.transactionsRepository.create(data);
+  async execute({ 
+    name, 
+    price, 
+    discount, 
+    tax, 
+    paymentMethod, 
+    description, 
+    category 
+  }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
+    const transaction = await this.transactionsRepository.create({ 
+      name, 
+      price, 
+      discount, 
+      tax, 
+      paymentMethod, 
+      description, 
+      category
+    });
 
-    return transaction
+    return { transaction }
   }
 
 }
