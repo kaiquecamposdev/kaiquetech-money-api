@@ -72,6 +72,7 @@ gh repo clone kaiquecamposdev/kaiquetech-money-api
 ```
 
 2. Instalar as dependências:
+   
 ```bash
 npm i
 ```
@@ -91,6 +92,7 @@ pnpm prisma:generate && pnpm prisma:dev
 ```
 
 4. Executar o servidor:
+
 ```bash
 npm run dev
 ```
