@@ -6,7 +6,6 @@ import { z } from "zod"
 export async function fetchTransactionsHistory(req: FastifyRequest, res: FastifyReply) {
   const createParamsSchema = z.object({
     page: z.coerce.number().min(1).default(1),
-
   })
 
   const { page } = createParamsSchema.parse(req.query)

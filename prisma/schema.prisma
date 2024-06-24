@@ -8,17 +8,19 @@ datasource db {
 }
 
 model Transaction {
-  id         String    @id @default(uuid())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id String @id @default(uuid())
 
   name          String
+  description   String?
+  category      String?
+  subCategory   String?
   price         Float
   discount      Float?
   tax           Float?
-  description   String?
-  category      String?
   paymentMethod String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 
   @@map("trasanctions")
 }

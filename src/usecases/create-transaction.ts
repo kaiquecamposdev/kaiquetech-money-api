@@ -3,12 +3,13 @@ import { Transaction } from "@prisma/client";
 
 interface CreateTransactionUseCaseRequest {
   name: string;
+  description: string | null;
+  category: string | null;
+  subCategory: string | null;
   price: number;
   discount: number | null;
   tax: number | null;
   paymentMethod: string;
-  description: string | null;
-  category: string | null;
 }
 
 interface CreateTransactionUseCaseResponse {
@@ -20,21 +21,23 @@ export class CreateTransactionUseCase {
 
   async execute({ 
     name, 
+    description, 
+    category,
+    subCategory,
     price, 
     discount, 
-    tax, 
+    tax,
     paymentMethod, 
-    description, 
-    category 
   }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
     const transaction = await this.transactionsRepository.create({ 
       name, 
+      description, 
+      category,
+      subCategory,
       price, 
       discount, 
-      tax, 
+      tax,
       paymentMethod, 
-      description, 
-      category
     });
 
     return { transaction }
