@@ -20,6 +20,8 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new CreateTransactionUseCase(transactionsRepository)
 
+  console.log(subCategory)
+
   await transactionUseCase.execute({
     name,
     description,

@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "trasanctions" (
+CREATE TABLE "transactions" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
@@ -12,5 +12,5 @@ CREATE TABLE "trasanctions" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
-    CONSTRAINT "trasanctions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
