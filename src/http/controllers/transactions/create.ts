@@ -15,7 +15,7 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     paymentMethod: z.enum(['Money', 'Credit', 'Debit', 'Pix']),
   })
 
-  const { name, description, category, subCategory, price, discount, tax, paymentMethod } = createBodySchema.parse(req.query)
+  const { name, description, category, subCategory, price, discount, tax, paymentMethod } = createBodySchema.parse(req.body)
 
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new CreateTransactionUseCase(transactionsRepository)
