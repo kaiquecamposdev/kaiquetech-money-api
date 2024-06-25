@@ -53,7 +53,17 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
       where: {
         id
       },
-      data: transaction
+      data: {
+        name: transaction.name,
+        description: transaction.description,
+        category: transaction.category,
+        subCategory: transaction.subCategory,
+        price: transaction.price,
+        discount: transaction.discount,
+        tax: transaction.tax,
+        paymentMethod: transaction.paymentMethod,
+        updated_at: new Date(),
+      }
     })
 
     return transaction

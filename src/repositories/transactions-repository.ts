@@ -4,6 +4,6 @@ export interface TransactionsRepository {
   findById(id: string): Promise<Transaction | null>
   findMany(page: number): Promise<Transaction[]>
   create(data: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>
-  update(id: string, transaction: Transaction): Promise<Transaction>
+  update(id: string, transaction: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>
   delete(id: string): Promise<void>
 }

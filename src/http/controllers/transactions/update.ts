@@ -1,9 +1,13 @@
 import { PrismaTransactionsRepository } from "@/repositories/prisma/prisma-transactions-repository"
-import { CreateTransactionUseCase } from "@/usecases/create-transaction"
+import { UpdateTransactionUseCase } from "@/usecases/update-transaction"
 import { FastifyReply, FastifyRequest } from "fastify"
 import { z } from "zod"
 
-export async function create(req: FastifyRequest, res: FastifyReply) {
+export async function update(req: FastifyRequest, res: FastifyReply) {
+  const createParamsSchema = z.object({
+    id: z.string(),
+  })
+
   const createBodySchema = z.object({
     name: z.string().min(3).max(255),
     description: z.string().min(3).max(255),
@@ -15,12 +19,14 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     paymentMethod: z.enum(['Money', 'Credit', 'Debit', 'Pix']),
   })
 
+  const { id } = createParamsSchema.parse(req.params)
   const { name, description, category, subCategory, price, discount, tax, paymentMethod } = createBodySchema.parse(req.body)
 
   const transactionsRepository = new PrismaTransactionsRepository()
-  const transactionUseCase = new CreateTransactionUseCase(transactionsRepository)
+  const transactionUseCase = new UpdateTransactionUseCase(transactionsRepository)
 
   await transactionUseCase.execute({
+    id,
     name,
     description,
     category,
