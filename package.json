@@ -6,21 +6,26 @@
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "prisma:generate": "npx prisma generate",
-    "prisma:dev": "npx prisma migrate dev"
+    "prisma:generate": "pnpm dlx prisma generate",
+    "prisma:dev": "pnpm dlx prisma migrate dev",
+    "prisma:studio": "pnpm dlx prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^20.14.2",
-    "prisma": "5.15.1",
-    "tsx": "^4.15.5",
-    "typescript": "^5.4.5"
-  },
   "dependencies": {
-    "@prisma/client": "5.15.1",
+    "@fastify/multipart": "8.3.0",
+    "csv-parser": "3.0.0",
     "fastify": "^4.28.0",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@prisma/client": "5.16.1",
+    "@rocketseat/eslint-config": "2.2.2",
+    "@types/node": "^20.14.2",
+    "eslint": "^8.0.0",
+    "prisma": "5.16.1",
+    "tsx": "^4.15.5",
+    "typescript": "^5.4.5"
   }
 }

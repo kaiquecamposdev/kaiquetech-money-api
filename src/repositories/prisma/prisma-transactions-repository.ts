@@ -39,7 +39,8 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
       discount: data.discount || 0,
       tax: data.tax || 0,
       paymentMethod: data.paymentMethod || '',
-      created_at: new Date(),
+      date: data.date ? new Date(data.date) : new Date(),
+      created_at: data.created_at ? new Date(data.created_at) : new Date(),
       updated_at: null,
     }
   
@@ -62,6 +63,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
         discount: transaction.discount,
         tax: transaction.tax,
         paymentMethod: transaction.paymentMethod,
+        date: transaction.date,
         updated_at: new Date(),
       }
     })

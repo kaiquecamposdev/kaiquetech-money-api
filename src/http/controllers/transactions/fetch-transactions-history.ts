@@ -14,7 +14,7 @@ export async function fetchTransactionsHistory(req: FastifyRequest, res: Fastify
   const transactionUseCase = new FetchTransactionsHistoryUseCase(transactionsRepository)
 
   const { transactions } = await transactionUseCase.execute({ 
-    page 
+    page
   })
 
   return res.status(200).send({

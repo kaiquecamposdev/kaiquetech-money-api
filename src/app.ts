@@ -1,12 +1,23 @@
-import fastify from "fastify";
+import fastifyMultipart from '@fastify/multipart';
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
-import { env } from "./env";
+import { env } from './env';
+import { transactionsRoutes } from "./http/controllers/transactions/routes";
+import { csvExtract } from './utils/csv-extract';
 
-export const app = fastify()
+export const app = fastify({ logger: true })
 
-app.setErrorHandler((error, _request, response) => {
+app.register(fastifyMultipart)
+app.addContentTypeParser('text/csv', { parseAs: 'buffer' }, async (_req, body, done) => {
+  const transactions = await csvExtract(body.toString())
+
+  done(null, transactions);
+});
+app.register(transactionsRoutes)
+
+app.setErrorHandler((error: ZodError, _req: FastifyRequest, res: FastifyReply) => {
   if (error instanceof ZodError) {
-    response
+    res
       .status(400)
       .send({ message: 'Validation Error.', issues: error.format() })
   }
@@ -15,5 +26,5 @@ app.setErrorHandler((error, _request, response) => {
     console.error(error)
   }
 
-  return response.status(500).send({ message: 'Internal Server Error.' })
+  return res.status(500).send({ message: 'Internal Server Error.' })
 })

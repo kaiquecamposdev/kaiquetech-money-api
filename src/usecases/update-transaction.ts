@@ -1,6 +1,6 @@
 import { TransactionsRepository } from "@/repositories/transactions-repository";
 import { Transaction } from "@prisma/client";
-import { ResourceNotFoundError } from "./errors/resource-not-found";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 interface UpdateTransactionUseCaseRequest {
   id: string;
@@ -12,6 +12,7 @@ interface UpdateTransactionUseCaseRequest {
   discount: number | null;
   tax: number | null;
   paymentMethod: string;
+  date: Date | null
 }
 
 interface UpdateTransactionUseCaseResponse {
@@ -23,6 +24,7 @@ export class UpdateTransactionUseCase {
 
   async execute({
     id, 
+    date,
     name, 
     description, 
     category,
@@ -39,6 +41,7 @@ export class UpdateTransactionUseCase {
     }
 
     const newTransaction = await this.transactionsRepository.update(id, {
+      date: date || oldTransaction.date,
       name: name || oldTransaction.name, 
       description: description || oldTransaction.description, 
       category: category || oldTransaction.category,

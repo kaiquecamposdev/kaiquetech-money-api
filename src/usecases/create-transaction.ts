@@ -10,6 +10,7 @@ interface CreateTransactionUseCaseRequest {
   discount: number | null;
   tax: number | null;
   paymentMethod: string;
+  date: Date | null;
 }
 
 interface CreateTransactionUseCaseResponse {
@@ -27,7 +28,8 @@ export class CreateTransactionUseCase {
     price, 
     discount, 
     tax,
-    paymentMethod, 
+    paymentMethod,
+    date
   }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
     const transaction = await this.transactionsRepository.create({ 
       name, 
@@ -37,10 +39,10 @@ export class CreateTransactionUseCase {
       price, 
       discount, 
       tax,
-      paymentMethod, 
+      paymentMethod,
+      date
     });
 
     return { transaction }
   }
-
 }

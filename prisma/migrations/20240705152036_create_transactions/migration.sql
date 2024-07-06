@@ -9,6 +9,7 @@ CREATE TABLE "transactions" (
     "discount" DOUBLE PRECISION,
     "tax" DOUBLE PRECISION,
     "paymentMethod" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
