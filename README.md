@@ -5,40 +5,42 @@
   - [ ] Id
   - [ ] Categoria
   - [ ] Método de pagamento
-- [ ] Deve ser possível cadastrar uma transação:
-  - [ ] Nome
-  - [ ] Preço
-  - [ ] Desconto
-  - [ ] Taxa
-  - [ ] Descrição
-  - [ ] Categoria
-  - [ ] Método de pagamento
-- [ ] Deve ser possível cadastrar várias transações importando um CSV;
-- [ ] Deve ser possível editar uma transação (Obs.: A data de atualização deve ser alterada):
-  - [ ] Nome
-  - [ ] Preço
-  - [ ] Desconto
-  - [ ] Taxa
-  - [ ] Descrição
-  - [ ] Categoria
-  - [ ] Método de pagamento
-- [ ] Deve ser possível deletar uma transação;
+- [x] Deve ser possível cadastrar uma transação:
+  - [x] Nome
+  - [x] Preço
+  - [x] Desconto
+  - [x] Taxa
+  - [x] Descrição
+  - [x] Categoria
+  - [x] Sub-Categoria
+  - [x] Método de pagamento
+- [x] Deve ser possível cadastrar várias transações importando um CSV;
+- [x] Deve ser possível editar uma transação:
+  - [x] Nome
+  - [x] Preço
+  - [x] Desconto
+  - [x] Taxa
+  - [x] Descrição
+  - [x] Categoria
+  - [x] Sub-Categoria
+  - [x] Método de pagamento
+- [x] Deve ser possível deletar uma transação;
 - [ ] Deve ser possível exportar os dados das transações para um formato de arquivo como .csv ou .xlsx;
 - [ ] Deve ser possível gerar relatórios sobre o fluxo de caixa, incluindo receita total, despesas, lucro, etc;
 
 ### RN (Regras de Negócio)
 
-- [ ] O valor total da transação deve ser calculado com base no preço, desconto e taxa;
+- [x] O valor total da transação deve ser calculado com base no preço, desconto e taxa;
   - Valor Total = Preço - (Desconto + Imposto);
 - [ ] Todas as transações devem ser registradas e mantidas no banco de dados;
-- [ ] Deve ser possível consultar o histórico de transações por data, categoria, método de pagamento, etc;
+- [x] Deve ser possível consultar o histórico de transações por data, categoria, método de pagamento, etc;
 - [ ] O sistema deve gerar relatórios sobre o fluxo de caixa, incluindo receita total, despesas, lucro, etc;
 
 ### RNF (Requisitos Não Funcionais)
 
-- [ ] Utilize a biblioteca `csv-parser`;
-- [ ] Os dados da aplicação precisam estar persistidos em um banco PostgreSQL;
-- [ ] Todas listas de dados precisam estar paginadas com 20 itens por página;
+- [x] Utilize a biblioteca `csv-parser`;
+- [x] Os dados da aplicação precisam estar persistidos em um banco PostgreSQL;
+- [x] Todas listas de dados precisam estar paginadas com 20 itens por página;
 
 ### Configurando Variáveis de Ambiente
 
