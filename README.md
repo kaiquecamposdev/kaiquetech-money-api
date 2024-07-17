@@ -1,8 +1,8 @@
 ### RF (Requisitos Funcionais)
 
-- [ ] Deve ser possível listar uma transação;
+- [x] Deve ser possível listar uma transação;
+- [x] Deve ser possível listar várias transações;
 - [ ] Deve ser possível listar transações por:
-  - [ ] Id
   - [ ] Categoria
   - [ ] Método de pagamento
 - [x] Deve ser possível cadastrar uma transação:
