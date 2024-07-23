@@ -7,15 +7,15 @@ import { z } from "zod"
 
 export async function create(req: FastifyRequest, res: FastifyReply) {
   const createBodySchema = z.object({
-    date: z.date().default(new Date()),
-    name: z.string().max(255),
-    description: z.string().max(255).nullable(),
-    category: z.string().max(255).nullable(),
-    subCategory: z.string().max(255).nullable(),
+    client: z.string().optional(),
+    description: z.string().max(255),
+    category: z.string().optional(),
+    subCategory: z.string().optional(),
     price: z.coerce.number().min(1).default(0),
-    discount: z.coerce.number().min(1).default(0).nullable(),
-    tax: z.coerce.number().min(1).default(0).nullable(),
+    discount: z.coerce.number().optional().default(0),
+    tax: z.coerce.number().optional().default(0),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
+    date: z.date().default(new Date()),
   })
 
   const transactionsRepository = new PrismaTransactionsRepository()
@@ -30,27 +30,27 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     
     const transactionsPromises = transactions.map(async (transaction) => {
       const { 
-        date,
-        name, 
+        client, 
         description, 
         category, 
         subCategory, 
-        paymentMethod,
+        price,
         discount, 
         tax,  
-        price,
+        paymentMethod,
+        date,
       } = createBodySchema.parse(transaction)
 
       await transactionUseCase.execute({
-        date,
-        name,
-        description,
-        category,
-        subCategory,
-        paymentMethod,
-        discount,
-        tax,
+        client, 
+        description, 
+        category, 
+        subCategory, 
         price,
+        discount, 
+        tax,  
+        paymentMethod,
+        date,
       })
     })
 
@@ -61,27 +61,27 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     })
   } else {
     const { 
-      date,
-      name, 
+      client, 
       description, 
       category, 
       subCategory, 
-      paymentMethod,
+      price,
       discount, 
       tax,  
-      price,
+      paymentMethod,
+      date,
     } = createBodySchema.parse(req.body)
 
     await transactionUseCase.execute({
-      date,
-      name,
-      description,
-      category,
-      subCategory,
-      paymentMethod,
-      discount,
-      tax,
+      client, 
+      description, 
+      category, 
+      subCategory, 
       price,
+      discount, 
+      tax,  
+      paymentMethod,
+      date,
     })
 
     return res.status(201).send({

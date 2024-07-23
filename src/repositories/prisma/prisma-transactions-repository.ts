@@ -31,16 +31,16 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
   async create(data: Prisma.TransactionUncheckedCreateInput) {
     const transaction: Transaction = {
       id: randomUUID(),
-      name: data.name,
-      description: data.description || '',
+      client: data.client || '',
+      description: data.description,
       category: data.category || '',
       subCategory: data.subCategory || '',
       price: data.price,
       discount: data.discount || 0,
       tax: data.tax || 0,
-      paymentMethod: data.paymentMethod || '',
+      paymentMethod: data.paymentMethod,
       date: data.date ? new Date(data.date) : new Date(),
-      created_at: data.created_at ? new Date(data.created_at) : new Date(),
+      created_at: new Date(),
       updated_at: null,
     }
   
@@ -55,7 +55,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
         id
       },
       data: {
-        name: transaction.name,
+        client: transaction.client,
         description: transaction.description,
         category: transaction.category,
         subCategory: transaction.subCategory,

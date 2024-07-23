@@ -9,27 +9,36 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
   })
 
   const createBodySchema = z.object({
-    date: z.date().default(new Date()),
-    name: z.string().min(3).max(255),
-    description: z.string().min(3).max(255),
-    category: z.string().min(3).max(255),
-    subCategory: z.string().min(3).max(255),
-    price: z.number().min(0),
-    discount: z.number().min(0),
-    tax: z.number().min(0),
+    client: z.string().optional(),
+    description: z.string().max(255),
+    category: z.string().optional(),
+    subCategory: z.string().optional(),
+    price: z.coerce.number().min(1).default(0),
+    discount: z.coerce.number().optional().default(0),
+    tax: z.coerce.number().optional().default(0),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
+    date: z.date().default(new Date()),
   })
 
   const { id } = createParamsSchema.parse(req.params)
-  const { date, name, description, category, subCategory, price, discount, tax, paymentMethod } = createBodySchema.parse(req.body)
+  const { 
+    client, 
+    description, 
+    category, 
+    subCategory, 
+    price, 
+    discount, 
+    tax, 
+    paymentMethod, 
+    date, 
+  } = createBodySchema.parse(req.body)
 
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new UpdateTransactionUseCase(transactionsRepository)
 
   await transactionUseCase.execute({
     id,
-    date,
-    name,
+    client,
     description,
     category,
     subCategory,
@@ -37,6 +46,7 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
     discount,
     tax,
     paymentMethod,
+    date,
   })
 
   return res.status(201).send()

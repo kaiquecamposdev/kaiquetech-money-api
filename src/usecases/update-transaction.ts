@@ -4,15 +4,15 @@ import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 interface UpdateTransactionUseCaseRequest {
   id: string;
-  name: string;
-  description: string | null;
-  category: string | null;
-  subCategory: string | null;
+  client?: string;
+  description: string;
+  category?: string;
+  subCategory?: string;
   price: number;
-  discount: number | null;
-  tax: number | null;
-  paymentMethod: string;
-  date: Date | null
+  discount?: number;
+  tax?: number;
+  paymentMethod: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix';
+  date: Date;
 }
 
 interface UpdateTransactionUseCaseResponse {
@@ -25,7 +25,7 @@ export class UpdateTransactionUseCase {
   async execute({
     id, 
     date,
-    name, 
+    client, 
     description, 
     category,
     subCategory,
@@ -42,7 +42,7 @@ export class UpdateTransactionUseCase {
 
     const newTransaction = await this.transactionsRepository.update(id, {
       date: date || oldTransaction.date,
-      name: name || oldTransaction.name, 
+      client: client || oldTransaction.client, 
       description: description || oldTransaction.description, 
       category: category || oldTransaction.category,
       subCategory: subCategory || oldTransaction.subCategory,

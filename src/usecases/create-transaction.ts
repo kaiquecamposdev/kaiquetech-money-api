@@ -2,15 +2,15 @@ import { TransactionsRepository } from "@/repositories/transactions-repository";
 import { Transaction } from "@prisma/client";
 
 interface CreateTransactionUseCaseRequest {
-  name: string;
-  description: string | null;
-  category: string | null;
-  subCategory: string | null;
+  client?: string;
+  description: string;
+  category?: string;
+  subCategory?: string;
   price: number;
-  discount: number | null;
-  tax: number | null;
-  paymentMethod: string;
-  date: Date | null;
+  discount?: number;
+  tax?: number;
+  paymentMethod: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix';
+  date: Date;
 }
 
 interface CreateTransactionUseCaseResponse {
@@ -21,7 +21,7 @@ export class CreateTransactionUseCase {
   constructor(private transactionsRepository: TransactionsRepository) {}
 
   async execute({ 
-    name, 
+    client, 
     description, 
     category,
     subCategory,
@@ -32,7 +32,7 @@ export class CreateTransactionUseCase {
     date
   }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
     const transaction = await this.transactionsRepository.create({ 
-      name, 
+      client, 
       description, 
       category,
       subCategory,
