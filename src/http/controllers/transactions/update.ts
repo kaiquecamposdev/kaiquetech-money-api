@@ -13,7 +13,7 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
     description: z.string().max(255),
     category: z.string().optional(),
     subCategory: z.string().optional(),
-    price: z.coerce.number().min(1).default(0),
+    price: z.coerce.number().default(0),
     discount: z.coerce.number().optional().default(0),
     tax: z.coerce.number().optional().default(0),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),

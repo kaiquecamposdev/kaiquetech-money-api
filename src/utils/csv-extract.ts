@@ -16,7 +16,7 @@ const csvDataSchema = z.object({
     description: z.string().max(255).nullable(),
     category: z.string().max(255).nullable(),
     subCategory: z.string().max(255).nullable(),
-    price: z.coerce.number().min(1).default(0),
+    price: z.coerce.number().default(0),
     discount: z.coerce.number().min(1).default(0).nullable(),
     tax: z.coerce.number().min(1).default(0).nullable(),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
