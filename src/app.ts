@@ -1,4 +1,5 @@
-import fastifyMultipart from '@fastify/multipart';
+import { fastifyCors } from '@fastify/cors';
+import { fastifyMultipart } from '@fastify/multipart';
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 import { env } from './env';
@@ -7,6 +8,9 @@ import { csvExtract } from './utils/csv-extract';
 
 export const app = fastify({ logger: true })
 
+app.register(fastifyCors, {
+  origin: '*'
+})
 app.register(fastifyMultipart)
 app.addContentTypeParser('text/csv', { parseAs: 'buffer' }, async (_req, body, done) => {
   const transactions = await csvExtract(body.toString())

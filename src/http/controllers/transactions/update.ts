@@ -4,11 +4,11 @@ import { FastifyReply, FastifyRequest } from "fastify"
 import { z } from "zod"
 
 export async function update(req: FastifyRequest, res: FastifyReply) {
-  const createParamsSchema = z.object({
+  const updateParamsSchema = z.object({
     id: z.string(),
   })
 
-  const createBodySchema = z.object({
+  const updateBodySchema = z.object({
     client: z.string().optional(),
     description: z.string().max(255),
     category: z.string().optional(),
@@ -17,10 +17,10 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
     discount: z.coerce.number().optional().default(0),
     tax: z.coerce.number().optional().default(0),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
-    date: z.date().default(new Date()),
+    date: z.coerce.date(),
   })
 
-  const { id } = createParamsSchema.parse(req.params)
+  const { id } = updateParamsSchema.parse(req.params)
   const { 
     client, 
     description, 
@@ -31,12 +31,12 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
     tax, 
     paymentMethod, 
     date, 
-  } = createBodySchema.parse(req.body)
+  } = updateBodySchema.parse(req.body)
 
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new UpdateTransactionUseCase(transactionsRepository)
 
-  await transactionUseCase.execute({
+  const { transaction } = await transactionUseCase.execute({
     id,
     client,
     description,
@@ -49,5 +49,7 @@ export async function update(req: FastifyRequest, res: FastifyReply) {
     date,
   })
 
-  return res.status(201).send()
+  return res.status(201).send({
+    transaction
+  })
 }

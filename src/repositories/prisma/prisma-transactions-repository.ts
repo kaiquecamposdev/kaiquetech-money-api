@@ -72,10 +72,12 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
   }
 
   async delete(id: string) {
-    await prisma.transaction.delete({
+    const transactionDeleted = await prisma.transaction.delete({
       where: {
         id
       }
     })
+
+    return transactionDeleted
   }
 }

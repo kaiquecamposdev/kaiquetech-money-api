@@ -15,7 +15,7 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     discount: z.coerce.number().optional().default(0),
     tax: z.coerce.number().optional().default(0),
     paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
-    date: z.date().default(new Date()),
+    date: z.coerce.date(),
   })
 
   const transactionsRepository = new PrismaTransactionsRepository()
@@ -60,6 +60,7 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
       message: 'Transactions created successfully.'
     })
   } else {
+
     const { 
       client, 
       description, 
@@ -72,7 +73,7 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
       date,
     } = createBodySchema.parse(req.body)
 
-    await transactionUseCase.execute({
+    const { transaction } = await transactionUseCase.execute({
       client, 
       description, 
       category, 
@@ -85,7 +86,7 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
     })
 
     return res.status(201).send({
-      message: 'Transaction created successfully.'
+      transaction,
     })
   }
 }

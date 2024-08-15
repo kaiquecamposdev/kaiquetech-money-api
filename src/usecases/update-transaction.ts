@@ -41,7 +41,6 @@ export class UpdateTransactionUseCase {
     }
 
     const newTransaction = await this.transactionsRepository.update(id, {
-      date: date || oldTransaction.date,
       client: client || oldTransaction.client, 
       description: description || oldTransaction.description, 
       category: category || oldTransaction.category,
@@ -50,6 +49,7 @@ export class UpdateTransactionUseCase {
       discount: discount || oldTransaction.discount, 
       tax: tax || oldTransaction.tax,
       paymentMethod: paymentMethod || oldTransaction.paymentMethod,
+      date: date || oldTransaction.date,
     });
 
     return { 
