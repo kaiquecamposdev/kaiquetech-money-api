@@ -1,7 +1,5 @@
 import { PrismaTransactionsRepository } from "@/repositories/prisma/prisma-transactions-repository"
 import { CreateTransactionUseCase } from "@/usecases/create-transaction"
-import { InvalidCsvFormatError } from "@/usecases/errors/invalid-csv-format-error"
-import { Transaction } from "@prisma/client"
 import { FastifyReply, FastifyRequest } from "fastify"
 import { z } from "zod"
 
@@ -21,72 +19,31 @@ export async function create(req: FastifyRequest, res: FastifyReply) {
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new CreateTransactionUseCase(transactionsRepository)
 
-  if(req.body instanceof Array) {
-    const transactions = req.body as Transaction[]
+  const { 
+    client, 
+    description, 
+    category, 
+    subCategory, 
+    price,
+    discount, 
+    tax,  
+    paymentMethod,
+    date,
+  } = createBodySchema.parse(req.body)
 
-    if(!transactions) {
-      throw new InvalidCsvFormatError()
-    }
-    
-    const transactionsPromises = transactions.map(async (transaction) => {
-      const { 
-        client, 
-        description, 
-        category, 
-        subCategory, 
-        price,
-        discount, 
-        tax,  
-        paymentMethod,
-        date,
-      } = createBodySchema.parse(transaction)
+  const { transaction } = await transactionUseCase.execute({
+    client, 
+    description, 
+    category, 
+    subCategory, 
+    price,
+    discount, 
+    tax,  
+    paymentMethod,
+    date,
+  })
 
-      await transactionUseCase.execute({
-        client, 
-        description, 
-        category, 
-        subCategory, 
-        price,
-        discount, 
-        tax,  
-        paymentMethod,
-        date,
-      })
-    })
-
-    Promise.all(transactionsPromises)
-
-    return res.status(201).send({ 
-      message: 'Transactions created successfully.'
-    })
-  } else {
-
-    const { 
-      client, 
-      description, 
-      category, 
-      subCategory, 
-      price,
-      discount, 
-      tax,  
-      paymentMethod,
-      date,
-    } = createBodySchema.parse(req.body)
-
-    const { transaction } = await transactionUseCase.execute({
-      client, 
-      description, 
-      category, 
-      subCategory, 
-      price,
-      discount, 
-      tax,  
-      paymentMethod,
-      date,
-    })
-
-    return res.status(201).send({
-      transaction,
-    })
-  }
+  return res.status(201).send({
+    transaction,
+  })
 }
