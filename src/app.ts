@@ -4,22 +4,21 @@ import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 import { env } from './env';
 import { transactionsRoutes } from "./http/controllers/transactions/routes";
-import { csvExtract } from './utils/csv-extract';
 
-export const app = fastify({ logger: true })
+export const app = fastify()
 
 app.register(fastifyCors, {
   origin: '*'
 })
-app.register(fastifyMultipart)
-app.addContentTypeParser('text/csv', { parseAs: 'buffer' }, async (_req, body, done) => {
-  const transactions = await csvExtract(body.toString())
-
-  done(null, transactions);
-});
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  }
+})
 app.register(transactionsRoutes)
 
 app.setErrorHandler((error: ZodError, _req: FastifyRequest, res: FastifyReply) => {
+  console.log(error)
   if (error instanceof ZodError) {
     res
       .status(400)
