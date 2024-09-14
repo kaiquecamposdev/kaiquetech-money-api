@@ -4,6 +4,10 @@ node_modules/
 # Build
 dist/
 build/
+.vscode
 
 # Environments
 .env
+
+# Temp
+temp
