@@ -9,7 +9,7 @@ interface CreateTransactionUseCaseRequest {
   price: number;
   discount?: number;
   tax?: number;
-  paymentMethod: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix';
+  paymentMethod: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix' | 'Link de Pagamento' | 'TED';
   date: Date;
 }
 

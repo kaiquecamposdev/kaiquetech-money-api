@@ -1,19 +1,32 @@
 import csvParser from 'csv-parser';
+import dayjs from 'dayjs';
 import fs from 'node:fs';
 import { z } from "zod";
 import { InvalidFieldTypeError } from './errors/invalid-field-type-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
+
+const numberFromString = z.string().transform((val) => parseFloat(val.replace(',', '.')));
 
 const csvDataSchema = z.object({
     client: z.string().optional(),
     description: z.string().max(255),
     category: z.string().optional(),
     subCategory: z.string().optional(),
-    price: z.coerce.number().default(0),
-    discount: z.coerce.number().optional().default(0),
-    tax: z.coerce.number().optional().default(0),
-    paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
-    date: z.coerce.date(),
+    price: numberFromString.refine((value) => !isNaN(value)),
+    discount: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
+    tax: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
+    paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Link de Pagamento', 'TED']),
+    date: z.string().transform((str) => {
+      const [date, time] = str.split(" ");
+
+      const [day, month, year] = date.split("/");
+      const [hours, minutes, seconds] = time.split(":");
+      const dateFormatted = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+      const dateTransformed = dayjs(dateFormatted).format();
+
+      return dateTransformed
+    })
   })
 
 type CsvDataSchemaType = z.infer<typeof csvDataSchema>
@@ -36,9 +49,10 @@ export class ProcessTransactionsUseCase {
       fs.createReadStream(filepath)
         .pipe(csvParser())
         .on('data', (data) => {
-          const { success, data: transaction } = csvDataSchema.safeParse(data)
+          const { success, data: transaction, error } = csvDataSchema.safeParse(data)
 
           if (!success) {
+            console.error(error.errors)
             throw new InvalidFieldTypeError()
           }
 

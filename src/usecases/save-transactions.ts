@@ -9,8 +9,8 @@ const saveTransactionsSchema = z.object({
   price: z.coerce.number().default(0),
   discount: z.coerce.number().optional().default(0),
   tax: z.coerce.number().optional().default(0),
-  paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix']),
-  date: z.coerce.date(),
+  paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Link de Pagamento', 'TED']),
+  date: z.coerce.date()
 })
 
 type SaveTransactionsSchemaType = z.infer<typeof saveTransactionsSchema>
