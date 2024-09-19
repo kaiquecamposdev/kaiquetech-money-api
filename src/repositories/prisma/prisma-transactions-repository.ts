@@ -3,6 +3,10 @@ import { Prisma, Transaction } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 import { TransactionsRepository } from '../transactions-repository'
 
+type TransactionCreateWithPaymentMethodAndType = {
+  data: Prisma.TransactionUncheckedCreateInput & Prisma.TransactionTypeUncheckedCreateWithoutTransactionInput
+}
+
 export class PrismaTransactionsRepository implements TransactionsRepository {
 
   async findById(id: string) {
@@ -19,22 +23,42 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
     return transaction
   }
 
-  async findMany(page: number) {
+  async findMany(offset: number, limit: number) {
+    const maxSize = await prisma.transaction.count()
+
     const transactions = await prisma.transaction.findMany({
-      skip: (page - 1) * 20,
-      take: 20,
+      skip: limit,
+      take: offset,
     })
 
-    return transactions
+    return {
+      maxSize,
+      transactions
+    }
   }
 
-  async create(data: Prisma.TransactionUncheckedCreateInput) {
+  async getSummary() {
+    const summary = await prisma.transaction.groupBy({
+      by: ['type', 'price', 'discount', 'tax'],
+      _sum: {
+        price: true,
+        discount: true,
+        tax: true
+      }
+    })
+
+    return summary
+  }
+
+  async create({ data }: TransactionCreateWithPaymentMethodAndType) {
+    
     const transaction: Transaction = {
       id: randomUUID(),
-      client: data.client || '',
+      client_name: data.client_name || '',
       description: data.description,
       category: data.category || '',
       subCategory: data.subCategory || '',
+      type: data.type,
       price: data.price,
       discount: data.discount || 0,
       tax: data.tax || 0,
@@ -43,7 +67,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
       created_at: new Date(),
       updated_at: null,
     }
-  
+
     await prisma.transaction.create({ data: transaction })
   
     return transaction
