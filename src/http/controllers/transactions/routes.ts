@@ -1,14 +1,17 @@
 import { FastifyInstance } from "fastify"
 import { create } from "./create"
-import { fetchTransactionsHistory } from "./fetch-transactions-history"
+import { fetchTransactions } from "./fetch-transactions"
 import { process } from "./process"
 import { remove } from "./remove"
 import { save } from "./save"
+import { summary } from "./summary"
 import { update } from "./update"
 import { upload } from "./upload"
 
 export async function transactionsRoutes(app: FastifyInstance) {
-  app.get('/transactions', fetchTransactionsHistory)
+  app.get('/transactions', fetchTransactions)
+
+  app.get('/transactions/summary', summary)
 
   app.post('/transactions', create)
   

@@ -9,7 +9,7 @@ datasource db {
 
 enum Type {
   INCOME
-  OUTCOME
+  EXPENSE
 }
 
 enum PaymentMethod {
@@ -24,10 +24,10 @@ enum PaymentMethod {
 model Transaction {
   id String @default(uuid())
 
-  typeId String
+  typeId String          @unique
   type   TransactionType @relation(fields: [typeId], references: [id])
 
-  paymentMethodId String
+  paymentMethodId String                   @unique
   paymentMethod   TransactionPaymentMethod @relation(fields: [paymentMethodId], references: [id])
 
   client_name String?
@@ -37,6 +37,7 @@ model Transaction {
   price       Float
   discount    Float?
   tax         Float?
+  amount      Float?
   date        DateTime?
 
   created_at DateTime  @default(now())
@@ -50,17 +51,18 @@ model TransactionPaymentMethod {
   id String @id @default(uuid())
 
   name        PaymentMethod
-  Transaction Transaction[]
+  amount      Float
+  Transaction Transaction?
 
-  @@map("transactionPaymentMethods")
+  @@map("transactionsPaymentMethod")
 }
 
 model TransactionType {
   id String @id @default(uuid())
 
-  name Type
+  name        Type
+  amount      Float
+  Transaction Transaction?
 
-  Transaction Transaction[]
-
-  @@map("transactionTypes")
+  @@map("transactionsType")
 }

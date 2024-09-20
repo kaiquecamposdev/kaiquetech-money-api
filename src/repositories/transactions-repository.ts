@@ -1,10 +1,29 @@
-import { Prisma, Transaction } from '@prisma/client';
+import { PaymentMethod, Prisma, Transaction, Type } from '@prisma/client';
+
+type Summary = {
+  amountToTransactionType: (Prisma.PickEnumerable<Prisma.TransactionTypeGroupByOutputType, ("name" | "amount")[]> & {
+    _sum: {
+        amount: number | null;
+    };
+})[],
+  amountToPaymentMethod: (Prisma.PickEnumerable<Prisma.TransactionPaymentMethodGroupByOutputType, ("amount" | "name")[]> & {
+    _sum: {
+        amount: number | null;
+    };
+})[],
+  amountToMonth: {
+    year_month: string
+    amount: number
+  }[]
+}
 
 export interface TransactionsRepository {
-  findById(id: string): Promise<Transaction | null>
   findMany(offset: number, limit: number): Promise<{maxSize: number, transactions: Transaction[]}>
-  getSummary(): Promise<{ income: number, outcome: number, discount: number, tax: number  }>
-  create(data: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>
+  getSummary(): Promise<Summary>
+  create(data: Prisma.TransactionUncheckedCreateInput & {
+    paymentMethod: PaymentMethod
+    type: Type
+  }): Promise<Transaction>
   update(id: string, transaction: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>
   delete(id: string): Promise<Transaction>
 }

@@ -5,8 +5,8 @@ import { z } from "zod"
 
 export async function fetchTransactions(req: FastifyRequest, res: FastifyReply) {
   const createParamsSchema = z.object({
-    offset: z.coerce.number().min(1).default(10),
-    limit: z.coerce.number().min(1).default(10)
+    offset: z.coerce.number().min(0).default(0),
+    limit: z.coerce.number().min(0).default(10)
   })
 
   const { offset, limit } = createParamsSchema.parse(req.query)

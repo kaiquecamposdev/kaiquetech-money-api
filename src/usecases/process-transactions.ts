@@ -12,10 +12,11 @@ const csvDataSchema = z.object({
     description: z.string().max(255),
     category: z.string().optional(),
     subCategory: z.string().optional(),
+    type: z.enum(['ENTRADA', 'SAIDA']),
     price: numberFromString.refine((value) => !isNaN(value)),
     discount: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
     tax: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
-    paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Link de Pagamento', 'TED']),
+    paymentMethod: z.enum(['Cartão de Crédito', 'Cartão de Débito', 'Dinheiro', 'Pix', 'Link de Pagamento', 'TED']),
     date: z.string().transform((str) => {
       const [date, time] = str.split(" ");
 
@@ -55,6 +56,8 @@ export class ProcessTransactionsUseCase {
             console.error(error.errors)
             throw new InvalidFieldTypeError()
           }
+
+
 
           unregisteredTransactions.push(transaction);
         })

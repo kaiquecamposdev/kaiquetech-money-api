@@ -2,7 +2,7 @@ import { PrismaTransactionsRepository } from "@/repositories/prisma/prisma-trans
 import { SummaryUseCase } from "@/usecases/summary"
 import { FastifyReply, FastifyRequest } from "fastify"
 
-export async function fetchTransactions(req: FastifyRequest, res: FastifyReply) {
+export async function summary(_req: FastifyRequest, res: FastifyReply) {
 
   const transactionsRepository = new PrismaTransactionsRepository()
   const transactionUseCase = new SummaryUseCase(transactionsRepository)

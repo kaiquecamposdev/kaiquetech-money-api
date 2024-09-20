@@ -1,34 +1,16 @@
 import { prisma } from '@/lib/prisma'
-import { Prisma, Transaction } from '@prisma/client'
+import { PaymentMethod, Prisma, Transaction, Type } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 import { TransactionsRepository } from '../transactions-repository'
 
-type TransactionCreateWithPaymentMethodAndType = {
-  data: Prisma.TransactionUncheckedCreateInput & Prisma.TransactionTypeUncheckedCreateWithoutTransactionInput
-}
-
 export class PrismaTransactionsRepository implements TransactionsRepository {
-
-  async findById(id: string) {
-    const transaction = await prisma.transaction.findUnique({
-      where: {
-        id
-      }
-    })
-
-    if (!transaction) {
-      return null
-    }
-
-    return transaction
-  }
 
   async findMany(offset: number, limit: number) {
     const maxSize = await prisma.transaction.count()
 
     const transactions = await prisma.transaction.findMany({
-      skip: limit,
-      take: offset,
+      skip: offset,
+      take: limit,
     })
 
     return {
@@ -38,31 +20,55 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
   }
 
   async getSummary() {
-    const summary = await prisma.transaction.groupBy({
-      by: ['type', 'price', 'discount', 'tax'],
-      _sum: {
-        price: true,
-        discount: true,
-        tax: true
+    const amountToTransactionType = await prisma.transactionType.groupBy({
+      by: ['name', 'amount'],
+      orderBy: {
+        amount: 'desc'
+      }
+    }) 
+    
+    const amountToPaymentMethod = await prisma.transactionPaymentMethod.groupBy({
+      by: ['name', 'amount'],
+      orderBy: {
+        amount: 'desc'
       }
     })
 
-    return summary
+    const amountToMonth = await prisma.$queryRaw`
+      SELECT
+        to_char(date, 'YYYY-MM') AS year_month,
+        SUM(amount) AS amount
+      FROM
+        transactions
+      GROUP BY
+        year_month
+      ORDER BY
+        year_month
+    ` as { year_month: string, amount: number }[]
+
+    return {
+      amountToTransactionType,
+      amountToPaymentMethod,
+      amountToMonth
+    }
   }
 
-  async create({ data }: TransactionCreateWithPaymentMethodAndType) {
-    
+  async create(data: Prisma.TransactionUncheckedCreateInput & {
+    paymentMethod: PaymentMethod
+    type: Type
+  }) {
     const transaction: Transaction = {
       id: randomUUID(),
       client_name: data.client_name || '',
       description: data.description,
       category: data.category || '',
       subCategory: data.subCategory || '',
-      type: data.type,
+      typeId: data.typeId,
       price: data.price,
       discount: data.discount || 0,
       tax: data.tax || 0,
-      paymentMethod: data.paymentMethod,
+      amount: data.price - (data.discount || 0) - (data.tax || 0),
+      paymentMethodId: data.paymentMethodId,
       date: data.date ? new Date(data.date) : new Date(),
       created_at: new Date(),
       updated_at: null,
