@@ -1,18 +1,16 @@
-import { TransactionsPaymentMethodRepository } from "@/repositories/transaction-payment-method-repository";
 import { TransactionsRepository } from "@/repositories/transactions-repository";
-import { TransactionsTypeRepository } from "@/repositories/transactions-type-repository";
 import { Transaction } from "@prisma/client";
 
 interface CreateTransactionUseCaseRequest {
   client_name?: string;
   description: string;
   category?: string;
-  subCategory?: string;
+  sub_category?: string;
   type: 'INCOME' | 'EXPENSE';
   price: number;
   discount?: number;
   tax?: number;
-  paymentMethod: 'CREDIT' | 'DEBIT' | 'MONEY' | 'PIX' | 'PAYMENTLINK' | 'TED';
+  payment_method: 'CREDIT' | 'DEBIT' | 'MONEY' | 'PIX' | 'PAYMENTLINK' | 'TED';
   date: Date;
 }
 
@@ -21,42 +19,30 @@ interface CreateTransactionUseCaseResponse {
 }
 
 export class CreateTransactionUseCase {
-  constructor(private transactionsRepository: TransactionsRepository, private transactionsType: TransactionsTypeRepository, private transactionsPaymentMethod: TransactionsPaymentMethodRepository ) {}
+  constructor(private transactionsRepository: TransactionsRepository) {}
 
   async execute({ 
     client_name, 
     description, 
     category,
-    subCategory,
+    sub_category,
     type,
     price, 
     discount, 
     tax,
-    paymentMethod,
+    payment_method,
     date
   }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
-    const transactionType = await this.transactionsType.create({
-      name: type,
-      amount: price - (discount || 0) - (tax || 0)
-    })
-
-    const transactionPaymentMethod = await this.transactionsPaymentMethod.create({
-      name: paymentMethod,
-      amount: price - (discount || 0) - (tax || 0)
-    })
-
     const transaction = await this.transactionsRepository.create({
       client_name, 
       description, 
       category,
-      subCategory,
-      typeId: transactionType.id,
+      sub_category,
       type,
       price, 
       discount, 
       tax,
-      paymentMethodId: transactionPaymentMethod.id,
-      paymentMethod,
+      payment_method,
       date
     });
 

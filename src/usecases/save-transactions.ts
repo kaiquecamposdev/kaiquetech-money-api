@@ -2,15 +2,16 @@ import { TransactionsRepository } from "@/repositories/transactions-repository";
 import { z } from "zod";
 
 const saveTransactionsSchema = z.object({
-  client: z.string().optional(),
+  client_name: z.string().optional(),
   description: z.string().max(255),
   category: z.string().optional(),
-  subCategory: z.string().optional(),
+  sub_category: z.string().optional(),
+  type: z.enum(['INCOME', 'EXPENSE']),
   price: z.coerce.number().default(0),
   discount: z.coerce.number().optional().default(0),
   tax: z.coerce.number().optional().default(0),
-  paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Link de Pagamento', 'TED']),
-  date: z.coerce.date()
+  payment_method: z.enum(['CREDIT', 'DEBIT', 'MONEY', 'PIX', 'PAYMENTLINK', 'TED']),
+  date: z.coerce.date(),
 })
 
 type SaveTransactionsSchemaType = z.infer<typeof saveTransactionsSchema>
@@ -24,16 +25,17 @@ export class SaveTransactionsUseCase {
 
   async execute({ unregisteredTransactions }: SaveTransactionsUseCaseRequest) {
     const transactionPromises = unregisteredTransactions.map(
-      (unregisteredTransaction) => {
-        return this.transactionsRepository.create({
-          client: unregisteredTransaction.client,
+      async (unregisteredTransaction) => {
+        return await this.transactionsRepository.create({
+          client_name: unregisteredTransaction.client_name,
           description: unregisteredTransaction.description,
           category: unregisteredTransaction.category,
-          subCategory: unregisteredTransaction.subCategory,
+          sub_category: unregisteredTransaction.sub_category,
+          type: unregisteredTransaction.type,
           price: unregisteredTransaction.price,
           discount: unregisteredTransaction.discount,
           tax: unregisteredTransaction.tax,
-          paymentMethod: unregisteredTransaction.paymentMethod,
+          payment_method: unregisteredTransaction.payment_method,
           date: unregisteredTransaction.date,
         });
       }

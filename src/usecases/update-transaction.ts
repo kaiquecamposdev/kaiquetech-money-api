@@ -7,11 +7,11 @@ interface UpdateTransactionUseCaseRequest {
   client?: string;
   description: string;
   category?: string;
-  subCategory?: string;
+  sub_category?: string;
   price: number;
   discount?: number;
   tax?: number;
-  paymentMethod: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix' | 'Link de Pagamento' | 'TED';
+  payment_method: 'Dinheiro' | 'Cartão de Crédito' | 'Cartão de Débito' | 'Pix' | 'Link de Pagamento' | 'TED';
   date: Date;
 }
 
@@ -28,11 +28,11 @@ export class UpdateTransactionUseCase {
     client, 
     description, 
     category,
-    subCategory,
+    sub_category,
     price, 
     discount, 
     tax,
-    paymentMethod, 
+    payment_method, 
   }: UpdateTransactionUseCaseRequest): Promise<UpdateTransactionUseCaseResponse> {
     const oldTransaction = await this.transactionsRepository.findById(id)
 
@@ -44,11 +44,11 @@ export class UpdateTransactionUseCase {
       client: client || oldTransaction.client, 
       description: description || oldTransaction.description, 
       category: category || oldTransaction.category,
-      subCategory: subCategory || oldTransaction.subCategory,
+      sub_category: sub_category || oldTransaction.sub_category,
       price: price || oldTransaction.price, 
       discount: discount || oldTransaction.discount, 
       tax: tax || oldTransaction.tax,
-      paymentMethod: paymentMethod || oldTransaction.paymentMethod,
+      payment_method: payment_method || oldTransaction.payment_method,
       date: date || oldTransaction.date,
     });
 

@@ -6,14 +6,15 @@ import { z } from "zod";
 const saveBodySchema = z.object({
   unregisteredTransactions: z.array(
     z.object({
-      client: z.string().optional(),
+      client_name: z.string().optional(),
       description: z.string().max(255),
       category: z.string().optional(),
-      subCategory: z.string().optional(),
+      sub_category: z.string().optional(),
+      type: z.enum(['INCOME', 'EXPENSE']),
       price: z.coerce.number().default(0),
       discount: z.coerce.number().optional().default(0),
       tax: z.coerce.number().optional().default(0),
-      paymentMethod: z.enum(['Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Link de Pagamento', 'TED']),
+      payment_method: z.enum(['CREDIT', 'DEBIT', 'MONEY', 'PIX', 'PAYMENTLINK', 'TED']),
       date: z.coerce.date(),
     })
   )

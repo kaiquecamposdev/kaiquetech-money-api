@@ -24,45 +24,21 @@ enum PaymentMethod {
 model Transaction {
   id String @default(uuid())
 
-  typeId String          @unique
-  type   TransactionType @relation(fields: [typeId], references: [id])
-
-  paymentMethodId String                   @unique
-  paymentMethod   TransactionPaymentMethod @relation(fields: [paymentMethodId], references: [id])
-
-  client_name String?
-  description String
-  category    String?
-  subCategory String?
-  price       Float
-  discount    Float?
-  tax         Float?
-  amount      Float?
-  date        DateTime?
+  client_name    String?
+  description    String
+  category       String?
+  sub_category   String?
+  type           Type
+  price          Float
+  discount       Float?
+  tax            Float?
+  payment_method PaymentMethod
+  amount         Float?
+  date           DateTime?
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  @@id([id, paymentMethodId, typeId])
+  @@id([id])
   @@map("transactions")
-}
-
-model TransactionPaymentMethod {
-  id String @id @default(uuid())
-
-  name        PaymentMethod
-  amount      Float
-  Transaction Transaction?
-
-  @@map("transactionsPaymentMethod")
-}
-
-model TransactionType {
-  id String @id @default(uuid())
-
-  name        Type
-  amount      Float
-  Transaction Transaction?
-
-  @@map("transactionsType")
 }
