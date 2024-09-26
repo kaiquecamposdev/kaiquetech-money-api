@@ -1,9 +1,19 @@
 import { prisma } from '@/lib/prisma'
-import { PaymentMethod, Prisma, Transaction, Type } from '@prisma/client'
+import { Prisma, Transaction } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 import { TransactionsRepository } from '../transactions-repository'
 
 export class PrismaTransactionsRepository implements TransactionsRepository {
+
+  async findById(id: string) {
+    const transaction = await prisma.transaction.findUniqueOrThrow({
+      where: {
+        id
+      }
+    })
+
+    return transaction
+  }
 
   async findMany(offset: number, limit: number) {
     const maxSize = await prisma.transaction.count()
@@ -20,17 +30,23 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
   }
 
   async getSummary() {
-    const amountToTransactionType = await prisma.transactionType.groupBy({
-      by: ['name', 'amount'],
+    const amountToTransactionType = await prisma.transaction.groupBy({
+      by: ['type'],
+      _sum: {
+        amount: true
+      },
       orderBy: {
-        amount: 'desc'
+        type: 'asc'
       }
-    }) 
+    })
     
-    const amountToPaymentMethod = await prisma.transactionPaymentMethod.groupBy({
-      by: ['name', 'amount'],
+    const amountToPaymentMethod = await prisma.transaction.groupBy({
+      by: ['payment_method'],
+      _sum: {
+        amount: true
+      },
       orderBy: {
-        amount: 'desc'
+        payment_method: 'asc'
       }
     })
 
@@ -53,22 +69,19 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
     }
   }
 
-  async create(data: Prisma.TransactionUncheckedCreateInput & {
-    paymentMethod: PaymentMethod
-    type: Type
-  }) {
+  async create(data: Prisma.TransactionUncheckedCreateInput) {
     const transaction: Transaction = {
       id: randomUUID(),
       client_name: data.client_name || '',
       description: data.description,
       category: data.category || '',
-      subCategory: data.subCategory || '',
-      typeId: data.typeId,
+      sub_category: data.sub_category || '',
+      type: data.type,
       price: data.price,
       discount: data.discount || 0,
       tax: data.tax || 0,
+      payment_method: data.payment_method,
       amount: data.price - (data.discount || 0) - (data.tax || 0),
-      paymentMethodId: data.paymentMethodId,
       date: data.date ? new Date(data.date) : new Date(),
       created_at: new Date(),
       updated_at: null,
@@ -79,21 +92,22 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
     return transaction
   }
 
-  async update(id: string, transaction: Transaction) {
-    await prisma.transaction.update({
+  async update(id: string, data: Prisma.TransactionUncheckedUpdateInput) {
+    const transaction = await prisma.transaction.update({
       where: {
         id
       },
       data: {
-        client: transaction.client,
-        description: transaction.description,
-        category: transaction.category,
-        subCategory: transaction.subCategory,
-        price: transaction.price,
-        discount: transaction.discount,
-        tax: transaction.tax,
-        paymentMethod: transaction.paymentMethod,
-        date: transaction.date,
+        client_name: data.client_name,
+        description: data.description,
+        category: data.category,
+        sub_category: data.sub_category,
+        type: data.type,
+        price: data.price,
+        discount: data.discount,
+        tax: data.tax,
+        payment_method: data.payment_method,
+        date: data.date,
         updated_at: new Date(),
       }
     })
