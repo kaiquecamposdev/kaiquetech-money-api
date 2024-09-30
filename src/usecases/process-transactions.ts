@@ -14,8 +14,8 @@ const csvDataSchema = z.object({
     sub_category: z.string().optional(),
     type: z.enum(['INCOME', 'EXPENSE']),
     price: numberFromString.refine((value) => !isNaN(value)),
-    discount: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
-    tax: numberFromString.refine((value) => !isNaN(value) && value <= 0).optional(),
+    discount: numberFromString.refine((value) => !isNaN(value)).optional(),
+    tax: numberFromString.refine((value) => !isNaN(value)).optional(),
     payment_method: z.string().transform((value) => {
       const paymentMethods: {
         [key: string]: string

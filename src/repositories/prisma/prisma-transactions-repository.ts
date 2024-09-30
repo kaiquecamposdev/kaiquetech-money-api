@@ -30,37 +30,46 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
   }
 
   async getSummary() {
-    const amountToTransactionType = await prisma.transaction.groupBy({
-      by: ['type'],
-      _sum: {
-        amount: true
-      },
-      orderBy: {
-        type: 'asc'
-      }
-    })
+    const amountToTransactionType = await prisma.$queryRaw`
+      SELECT 
+        type,
+        CAST(SUM(amount) AS DECIMAL(10,2)) AS amount, 
+        MAX(date) AS last_date
+      FROM 
+        transactions
+      GROUP BY
+        type
+      ORDER BY
+        type
+    ` as { type: string, amount: number, last_date: Date }[]
     
-    const amountToPaymentMethod = await prisma.transaction.groupBy({
-      by: ['payment_method'],
-      _sum: {
-        amount: true
-      },
-      orderBy: {
-        payment_method: 'asc'
-      }
-    })
+    const amountToPaymentMethod = await prisma.$queryRaw`
+      SELECT
+        payment_method,
+        CAST(COUNT(*) AS INT) AS count,
+        CAST(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END) AS DECIMAL(10,2)) AS amount
+      FROM
+        transactions
+      GROUP BY
+        payment_method
+      ORDER BY
+        payment_method
+    ` as { payment_method: string, count: number, amount: number }[]
 
     const amountToMonth = await prisma.$queryRaw`
       SELECT
         to_char(date, 'YYYY-MM') AS year_month,
-        SUM(amount) AS amount
+        CAST(COUNT(*) AS INT) AS count,
+        CAST(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END) AS DECIMAL(10,2)) AS incomes,
+        CAST(SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END) AS DECIMAL(10,2)) AS expenses,
+        CAST(SUM(amount) AS DECIMAL(10, 2)) AS amount
       FROM
         transactions
       GROUP BY
         year_month
       ORDER BY
         year_month
-    ` as { year_month: string, amount: number }[]
+    ` as { year_month: string, count: number, incomes: number, expenses: number, amount: number }[]
 
     return {
       amountToTransactionType,

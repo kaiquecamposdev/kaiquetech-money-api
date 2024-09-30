@@ -41,7 +41,7 @@ export class UpdateTransactionUseCase {
     }
 
     const newTransaction = await this.transactionsRepository.update(id, {
-      client: client || oldTransaction.client, 
+      client_name: client || oldTransaction.client_name, 
       description: description || oldTransaction.description, 
       category: category || oldTransaction.category,
       sub_category: sub_category || oldTransaction.sub_category,

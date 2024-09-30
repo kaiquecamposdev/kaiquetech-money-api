@@ -4,18 +4,22 @@ import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 interface SummaryUseCaseResponse {
   summary: {
     amountToTransactionType: {
-      type: string
-      amount: number
+      type: string, 
+      amount: number, 
+      last_date: Date 
     }[],
     amountToPaymentMethod: {
-      payment_method: string
+      payment_method: string,
+      count: number,
       amount: number
     }[],
     amountToMonth: {
-      year_month: string
+      year_month: string,
+      count: number,
+      incomes: number,
+      expenses: number,
       amount: number
-    }[]
-  }
+    }[]}
 }
 
 export class SummaryUseCase {
@@ -28,6 +32,8 @@ export class SummaryUseCase {
       throw new ResourceNotFoundError()
     }
 
-    return { summary }
+    return { 
+      summary
+    }
   }
 }
