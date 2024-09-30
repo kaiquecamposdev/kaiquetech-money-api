@@ -5,6 +5,7 @@ interface SummaryUseCaseResponse {
   summary: {
     amountToTransactionType: {
       type: string, 
+      count: number,
       amount: number, 
       last_date: Date 
     }[],

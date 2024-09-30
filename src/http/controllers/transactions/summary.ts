@@ -9,8 +9,6 @@ export async function summary(_req: FastifyRequest, res: FastifyReply) {
 
   const { summary } = await transactionUseCase.execute()
 
-  console.log(summary)
-
   return res.status(200).send({
     summary
   })

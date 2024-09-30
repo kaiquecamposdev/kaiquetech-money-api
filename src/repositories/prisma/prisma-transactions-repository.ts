@@ -33,6 +33,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
     const amountToTransactionType = await prisma.$queryRaw`
       SELECT 
         type,
+        CAST(COUNT(*) AS INT) AS count,
         CAST(SUM(amount) AS DECIMAL(10,2)) AS amount, 
         MAX(date) AS last_date
       FROM 
@@ -41,7 +42,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
         type
       ORDER BY
         type
-    ` as { type: string, amount: number, last_date: Date }[]
+    ` as { type: string, count: number, amount: number, last_date: Date }[]
     
     const amountToPaymentMethod = await prisma.$queryRaw`
       SELECT

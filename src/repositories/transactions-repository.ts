@@ -8,6 +8,7 @@ type FindManyResponseType = {
 type SummaryResponseType = {
   amountToTransactionType: { 
     type: string, 
+    count: number, 
     amount: number, 
     last_date: Date 
   }[],
