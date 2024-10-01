@@ -35,6 +35,7 @@ export class SaveTransactionsUseCase {
           price: unregisteredTransaction.price,
           discount: unregisteredTransaction.discount,
           tax: unregisteredTransaction.tax,
+          amount: unregisteredTransaction.price - (unregisteredTransaction.discount || 0) - (unregisteredTransaction.tax || 0),
           payment_method: unregisteredTransaction.payment_method,
           date: unregisteredTransaction.date,
         });

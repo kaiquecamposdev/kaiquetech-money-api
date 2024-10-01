@@ -42,6 +42,7 @@ export class CreateTransactionUseCase {
       price, 
       discount, 
       tax,
+      amount: price - (discount || 0) - (tax || 0),
       payment_method,
       date
     });

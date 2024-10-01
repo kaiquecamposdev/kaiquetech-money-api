@@ -6,20 +6,26 @@ type FindManyResponseType = {
 }
 
 type SummaryResponseType = {
-  amountToTransactionType: { 
+  summaryToTransactionType: { 
     type: string, 
     count: number, 
+    discounts: number,
+    taxes: number,
     amount: number, 
     last_date: Date 
   }[],
-  amountToPaymentMethod: {
-    payment_method: string,
+  summaryToPaymentMethod: {
     count: number,
-    amount: number;
+    payment_method: string,
+    discounts: number,
+    taxes: number,
+    incomes: number;
   }[],
-  amountToMonth: {
+  summaryToMonth: {
     year_month: string
     count: number
+    discounts: number
+    taxes: number
     incomes: number
     expenses: number
     amount: number
